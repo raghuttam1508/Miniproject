@@ -10,6 +10,7 @@ from plotly import graph_objs as go
 import altair as alt
 import os
 import string
+import mysql.connector
 
 from streamlit.uploaded_file_manager import UploadedFile
   
@@ -52,8 +53,21 @@ if rad == 'Company Desk':
     client_c = st.text_input('USERNAME OR CLIENT ID')
     client_p = st.text_input('PASSWORD',type='password',)
     client_sub = st.button('Login')
+
+    mydb = mysql.connector.connect(
+    host="127.0.0.1",
+    user="root",
+    database="miniProject"
+    )
+    query = "SELECT * FROM Login WHERE UserName =%s AND Password =%s"
+    try: 
+        mycursor = mydb.cursor()
+        mycursor.execute(query,[(client_c),(client_p)])
+        myresult = mycursor.fetchall()
+    except: print()
+
     
-    if client_sub and client_c == '123' and client_p == '123':
+    if client_sub and myresult:
        
         #Add code for connecting DB for LOGIN window
         #st.header('**Our Data Sets**')
@@ -78,7 +92,7 @@ if rad == 'Company Desk':
     elif client_sub and client_c == '' or client_p == '':  
          st.error('No Credentials!')
     
-    elif client_sub and client_c != '123' or client_p != '123':
+    elif client_sub and not myresult:   
         st.error('Wrong Credentials')
 
 if rad == 'About us': 
