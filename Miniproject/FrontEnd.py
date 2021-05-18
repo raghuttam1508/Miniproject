@@ -41,7 +41,7 @@ if rad == 'Consumer Desk':
     enterID = st.text_input('Input')
     u_submit = st.button("Submit")
     #if u_submit:
-        
+    #connection    
     #add code to check from database and printing the row. 
     
 if rad == 'Company Desk':
