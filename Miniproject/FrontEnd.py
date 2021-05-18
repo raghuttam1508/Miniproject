@@ -1,20 +1,25 @@
 from io import StringIO
 from altair.vegalite.v4.api import Chart
 from altair.vegalite.v4.schema.channels import Tooltip
+from altair.vegalite.v4.schema.core import LayoutAlign
 from pandas.core.frame import DataFrame
 import streamlit as st
 import numpy as np
 import pandas as pd
+import matplotlib
+matplotlib.use('TkAgg')
 from matplotlib import pyplot as plt
+import csv
 from plotly import graph_objs as go
 import altair as alt
 import os
 import string
 import mysql.connector
+from sklearn.linear_model import LinearRegression
 
 from streamlit.uploaded_file_manager import UploadedFile
   
-sets = pd.read_excel("adharr.xlsx")
+
 
 # Add a selectbox to the sidebar:
 st.sidebar.header('Navigation')
@@ -65,7 +70,120 @@ if rad == 'Company Desk':
         mycursor.execute(query,[(client_c),(client_p)])
         myresult = mycursor.fetchall()
     except: print()
+    
 
+    PSQ = []
+    demand = []
+    netProfit = []
+    PIN = []
+    time = []
+    for i in range(1,20):
+        time.append(i)
+    
+    rad_pred = st.sidebar.radio('Which product data do you want :',["1. TATA tea","2. Lays","3. Mountain dew","4. Hide and seek"])
+    if rad_pred == '1. TATA tea':
+        path_1 = 'C:\\Users\\raghu\\OneDrive\\Desktop\\Miniproject\\TATA tea.csv'
+        with open(path_1) as file :
+            reader = csv.reader(file)
+            count = 0
+            for row in reader:
+                if(count > 0):
+                    PSQ.append(int(int(float(row[0]))/1000))
+                    demand.append(int(int(row[1])/1000))
+                    netProfit.append(int(int(float(row[2]))/1000))
+                    PIN.append(int(int(row[3])/1000))
+                count += 1
+
+        # Training prediction model
+        lr = LinearRegression()
+        lr.fit(np.array(demand).reshape(-1,1), np.array(PSQ).reshape(-1,1))
+
+        #Prediction
+        st.sidebar.header("Next marketing budget : ")
+        v = st.sidebar.number_input('Budget')
+        val = int(float(v))
+
+        val = np.array(val).reshape(1,-1)
+        pred = lr.predict(val)
+        st.sidebar.write(pred)
+    
+    if rad_pred == '2. Lays':
+        path_2 = 'C:\\Users\\raghu\\OneDrive\\Desktop\\Miniproject\\Lays.csv'
+        with open(path_2) as file :
+            reader = csv.reader(file)
+            count = 0
+            for row in reader:
+                if(count > 0):
+                    PSQ.append(int(int(float(row[0]))/1000))
+                    demand.append(int(int(row[1])/1000))
+                    netProfit.append(int(int(float(row[2]))/1000))
+                    PIN.append(int(int(row[3])/1000))
+                count += 1
+
+        # Training prediction model
+        lr = LinearRegression()
+        lr.fit(np.array(demand).reshape(-1,1), np.array(PSQ).reshape(-1,1))
+
+        #Prediction
+        st.sidebar.header("Next marketing budget : ")
+        v = st.sidebar.number_input('Budget')
+        val = int(float(v))
+
+        val = np.array(val).reshape(1,-1)
+        pred = lr.predict(val)
+        st.sidebar.write(pred)
+    
+    if rad_pred == '3. Mountain dew':
+        path_3 = 'C:\\Users\\raghu\\OneDrive\\Desktop\\Miniproject\\Mountain dew.csv'
+        with open(path_3) as file :
+            reader = csv.reader(file)
+            count = 0
+            for row in reader:
+                if(count > 0):
+                    PSQ.append(int(int(float(row[0]))/1000))
+                    demand.append(int(int(row[1])/1000))
+                    netProfit.append(int(int(float(row[2]))/1000))
+                    PIN.append(int(int(row[3])/1000))
+                count += 1
+
+        # Training prediction model
+        lr = LinearRegression()
+        lr.fit(np.array(demand).reshape(-1,1), np.array(PSQ).reshape(-1,1))
+
+        #Prediction
+        st.sidebar.header("Next marketing budget : ")
+        v = st.sidebar.number_input('Budget')
+        val = int(float(v))
+
+        val = np.array(val).reshape(1,-1)
+        pred = lr.predict(val)
+        st.sidebar.write(pred)
+
+    if rad_pred == '4. Hide and seek':
+        path_4 = 'C:\\Users\\raghu\\OneDrive\\Desktop\\Miniproject\\Hide and seek.csv'
+        with open(path_4) as file :
+            reader = csv.reader(file)
+            count = 0
+            for row in reader:
+                if(count > 0):
+                    PSQ.append(int(int(float(row[0]))/1000))
+                    demand.append(int(int(row[1])/1000))
+                    netProfit.append(int(int(float(row[2]))/1000))
+                    PIN.append(int(int(row[3])/1000))
+                count += 1  
+
+        # Training prediction model
+        lr = LinearRegression()
+        lr.fit(np.array(demand).reshape(-1,1), np.array(PSQ).reshape(-1,1))
+
+        #Prediction
+        st.sidebar.header("Next marketing budget : ")
+        v = st.sidebar.number_input('Budget')
+        val = int(float(v))
+
+        val = np.array(val).reshape(1,-1)
+        pred = lr.predict(val)
+        st.sidebar.write(pred)
     
     if client_sub and myresult:
        
@@ -73,24 +191,45 @@ if rad == 'Company Desk':
         #st.header('**Our Data Sets**')
         #st.table(sets) 
             #graphs = st.sidebar.selectbox("What kind of visualisations?",['Future Quaotations','Market Demand VS Supply'], index=0) 
-        layout = go.Layout(
-            xaxis = dict(range=[0,16.000]),
-            yaxis = dict(range=[0,2100.000])
-        )
-        fig = go.Figure(data=go.Scatter(x = sets['UID'], y = sets['NAME'],mode='markers' ),layout = layout)
-        st.plotly_chart(fig)
+        
+        #layout = go.Layout(
+        #    xaxis  = dict(range = [0,2000000.000]),
+        #    yaxis  = dict(range = [0,100]),
+        #)
+        #fig = go.Figure(path_1 = go.scatter(x = path_1["demand"], y = path_1['product sales quarterly'],mode = "marker"),layout = layout)
+        #st.plotly_chart(fig)
+
+        #Below this is the code to display graphs 
+        st.set_option('deprecation.showPyplotGlobalUse', False)
+        plt.scatter(demand, PSQ)
+        plt.xlabel("Marketing budget in lakhs")
+        plt.ylabel("Product sales per quarter")
+        plt.tight_layout()
+        st.pyplot()
 
         st.set_option('deprecation.showPyplotGlobalUse', False)
-        plt.figure(figsize = (10,5))
-        plt.scatter(sets['UID'],sets['NAME'])
-        plt.ylim(0)
-        plt.ylabel('NAME')
-        plt.xlabel('UID')
+        plt.scatter(PSQ, netProfit)
+        plt.xlabel("Product sales per quarter")
+        plt.ylabel("Net profit")
+        plt.tight_layout()
+        st.pyplot()
+
+        st.set_option('deprecation.showPyplotGlobalUse', False)
+        plt.scatter(time, netProfit)
+        plt.xlabel("Time in quarters")
+        plt.ylabel("Net profit")
+        plt.tight_layout()
+        st.pyplot()
+
+        st.set_option('deprecation.showPyplotGlobalUse', False)
+        plt.scatter(time, PIN)
+        plt.xlabel("Time in quarters")
+        plt.ylabel("Losses in profit")
         plt.tight_layout()
         st.pyplot()
 
     elif client_sub and client_c == '' or client_p == '':  
-         st.error('No Credentials!')
+        st.error('No Credentials!')
     
     elif client_sub and not myresult:   
         st.error('Wrong Credentials')
@@ -107,7 +246,11 @@ if rad == 'About us':
     ### 3. Raghuttam Parvatikar (34)
     ''')
     st.markdown('''
+    ##
     ## **Project Objectives**
+    ### 1. User Friendly sharp GUI
+    ### 2. A well eshtablished Database
+    ### 3. A reliable Prediction Module with Visual Representation of Data
     ''')
 
 #st.file_uploader('Dataset')
