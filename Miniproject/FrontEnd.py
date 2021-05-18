@@ -17,7 +17,7 @@ sets = pd.read_excel("adharr.xlsx")
 
 # Add a selectbox to the sidebar:
 st.sidebar.header('Navigation')
-rad = st.sidebar.radio('Select Your Domain: ',['Home', 'Customer Desk','Client Desk','About us'])
+rad = st.sidebar.radio('Select Your Domain: ',['Home', 'Consumer Desk','Company Desk','About us'])
 
 if rad == 'Home':
     st.title("WELCOME TO THE RESUME OF YOUR PRODUCT")
@@ -29,8 +29,8 @@ if rad == 'Home':
     """,True)
     st.image("rebrand.jpg",caption='The future is Here',use_column_width=True)
 
-if rad == 'Customer Desk':
-    st.title("CUSTOMER DESK")   
+if rad == 'Consumer Desk':
+    st.title("CONSUMER DESK")   
     st.markdown(""" 
     ### Welcome to our Lobby! <br>
 
@@ -40,9 +40,11 @@ if rad == 'Customer Desk':
             # """)
     enterID = st.text_input('Input')
     u_submit = st.button("Submit")
-    #add code to check from database and printing the row.
+    #if u_submit:
         
-if rad == 'Client Desk':
+    #add code to check from database and printing the row. 
+    
+if rad == 'Company Desk':
     st.title("CLIENT DESK") 
     st.markdown(""" 
     ### Welcome to our Lobby! <br>
@@ -50,38 +52,40 @@ if rad == 'Client Desk':
     client_c = st.text_input('USERNAME OR CLIENT ID')
     client_p = st.text_input('PASSWORD',type='password',)
     client_sub = st.button('Login')
+    
+    if client_sub and client_c == '123' and client_p == '123':
+       
+        #Add code for connecting DB for LOGIN window
+        #st.header('**Our Data Sets**')
+        #st.table(sets) 
+            #graphs = st.sidebar.selectbox("What kind of visualisations?",['Future Quaotations','Market Demand VS Supply'], index=0) 
+        layout = go.Layout(
+            xaxis = dict(range=[0,16.000]),
+            yaxis = dict(range=[0,2100.000])
+        )
+        fig = go.Figure(data=go.Scatter(x = sets['UID'], y = sets['NAME'],mode='markers' ),layout = layout)
+        st.plotly_chart(fig)
 
-    if client_sub:
-        if client_c == '123' and client_p == '123':
-            #Add code for connecting DB for LOGIN window
-            st.header('**Our Data Sets**')
-            st.table(sets) 
+        st.set_option('deprecation.showPyplotGlobalUse', False)
+        plt.figure(figsize = (10,5))
+        plt.scatter(sets['UID'],sets['NAME'])
+        plt.ylim(0)
+        plt.ylabel('NAME')
+        plt.xlabel('UID')
+        plt.tight_layout()
+        st.pyplot()
 
-            graphs = st.sidebar.selectbox("What kind of visualisations?",['Future Quaotations','Market Demand VS Supply'], index=0) 
-            
-            if graphs == 'Future Quaotations':
-                layout = go.Layout(
-                    xaxis = dict(range=[0,16.000]),
-                    yaxis = dict(range=[0,2100.000])
-                )
-                fig = go.Figure(sets=go.Scatter(x = sets['UID'], y = sets['NAME'],mode='markers' ),layout = layout)
-                st.plotly_chart(fig)
-            
-            if graphs == 'Market Demand VS Supply':
-                st.set_option('deprecation.showPyplotGlobalUse', False)
-                plt.figure(figsize = (10,5))
-                plt.scatter(sets['UID'],sets['NAME'])
-                plt.ylim(0)
-                plt.ylabel('NAME')
-                plt.xlabel('UID')
-                plt.tight_layout()
-                st.pyplot()
-            
+    elif client_sub and client_c == '' or client_p == '':  
+         st.error('No Credentials!')
+    
+    elif client_sub and client_c != '123' or client_p != '123':
+        st.error('Wrong Credentials')
 
-        else:
-            st.error('Wrong Credentials!')
+if rad == 'About us': 
 
-if rad == 'About us':   
+    st.markdown('''
+    # **WE ARE HIRING!!!!** :sunglasses:
+    ''',True) 
     st.title('TEAM MEMBERS')
     st.write('''
     ### 1. Bhavya Hingorani      (9)
@@ -93,7 +97,6 @@ if rad == 'About us':
     ''')
 
 #st.file_uploader('Dataset')
-
 #st.line_chart(data)
 #st.area_chart(data)
 #st.bar_chart(data)
