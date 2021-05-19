@@ -201,7 +201,7 @@ if rad == 'Company Desk':
 
         #Below this is the code to display graphs 
         st.set_option('deprecation.showPyplotGlobalUse', False)
-        plt.scatter(demand, PSQ)
+        plt.bar(demand, PSQ)
         plt.xlabel("Marketing budget in lakhs")
         plt.ylabel("Product sales per quarter")
         plt.tight_layout()
