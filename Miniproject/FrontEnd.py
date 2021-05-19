@@ -15,7 +15,7 @@ import altair as alt
 import os
 import string
 import mysql.connector
-from sklearn.linear_model import LinearRegression
+#from sklearn.linear_model import LinearRegression
 
 from streamlit.uploaded_file_manager import UploadedFile
   
@@ -46,8 +46,33 @@ if rad == 'Consumer Desk':
             # """)
     enterID = st.text_input('Input')
     u_submit = st.button("Submit")
-    #if u_submit:
-        
+    
+    if u_submit:
+        mydb = mysql.connector.connect(
+        host="127.0.0.1",
+        user="root",
+        database="miniProject"
+        )
+        query = "SELECT Product_info.Name,Product_info.M_location,Batch.EXP,Batch.MFG,Company.Name as Company FROM Product INNER JOIN Batch ON Batch.Batch_id=Product.Batch_id INNER JOIN Product_info ON Product_info.info_id=Batch.info_id INNER JOIN Company ON Company.C_id=Product_info.C_id WHERE Product.Product_id =%s;"
+        content = "SELECT Content.Content,Content.Source FROM Product INNER JOIN Batch ON Batch.Batch_id=Product.Batch_id INNER JOIN Product_info ON Product_info.info_id=Batch.info_id INNER JOIN Content ON Content.Cinfo_id=Product_info.C_id WHERE Product.Product_id=%s;"
+        try: 
+            mycursor = mydb.cursor()
+            #1st query fired
+            mycursor.execute(query,[(enterID)])
+            info = mycursor.fetchall()
+            
+            #2nd query fired
+            mycursor.execute(content,[(enterID)])
+            content=mycursor.fetchall()
+            
+            #st.write(myresult)
+            for x in info:
+                print (x)
+            print()
+            for x in content:
+                print(x)
+                
+        except: print("ERR : NO DATA FOUND")
     #add code to check from database and printing the row. 
     
 if rad == 'Company Desk':
