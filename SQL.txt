@@ -1,0 +1,47 @@
+CREATE DATABASE miniProject;    
+USE miniProject;                                                                  
+CREATE TABLE Product(Product_id int NOT NULL PRIMARY KEY, Batch_id int);
+CREATE TABLE Login(UserName varchar(16),Password varchar(16));
+CREATE TABLE Company(C_id int NOT NULL PRIMARY KEY,Name char(50));
+CREATE TABLE Product_info(info_id int NOT NULL PRIMARY KEY,Name char(50) ,MRP int,M_location text,C_id int);
+CREATE TABLE Batch(Batch_id int NOT NULL PRIMARY KEY,EXP char(18) ,MFG char(18),info_id int);
+CREATE TABLE Content(Content text,Source text,Cinfo_id int);
+
+INSERT INTO Company Values('1','PepsiCo');
+INSERT INTO Product_info  Values('1','Kurkure','30','Mumbai','1');
+INSERT INTO Batch  Values('1','20-06-2023','20-06-2021','1');
+INSERT INTO Content Values('Mirch','Kashmir','1');
+INSERT INTO Content Values('Salt','Tata, Kolhapur','1');
+INSERT INTO Product Values('1','1');
+
+#for checking tables
+SELECT * FROM Product;
+SELECT * From Batch;
+SELECT * From Product_info;
+SELECT * From Content;
+SELECT * From Company;
+#testing joins
+SELECT Batch.EXP,Batch.MFG,Product.Batch_id
+FROM Product
+INNER JOIN Batch ON Batch.Batch_id=Product.Batch_id
+where Product.Product_id = 1;
+
+SELECT Batch.EXP,Batch.MFG,Product.Batch_id
+FROM Product
+INNER JOIN Batch ON Batch.Batch_id=Product.Batch_id
+where Product.Product_id = 1;
+
+#Query for content
+SELECT Content.Content,Content.Source
+FROM Product
+INNER JOIN Batch ON Batch.Batch_id=Product.Batch_id                               
+INNER JOIN Product_info ON Product_info.info_id=Batch.info_id                       
+INNER JOIN Content ON Content.Cinfo_id=Product_info.C_id
+where Product.Product_id='1';
+
+#Query for product info
+SELECT Product_info.Name,Product_info.M_location,Batch.EXP,Batch.MFG,Company.Name as Company
+FROM Product
+INNER JOIN Batch ON Batch.Batch_id=Product.Batch_id                               
+INNER JOIN Product_info ON Product_info.info_id=Batch.info_id                       
+INNER JOIN Company ON Company.C_id=Product_info.C_id;
