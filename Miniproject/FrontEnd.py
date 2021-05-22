@@ -1,4 +1,4 @@
-from io import StringIO
+
 from altair.vegalite.v4.api import Chart
 from altair.vegalite.v4.schema.channels import Tooltip
 from altair.vegalite.v4.schema.core import LayoutAlign
@@ -12,11 +12,8 @@ from matplotlib import pyplot as plt
 import csv
 from plotly import graph_objs as go
 import altair as alt
-import os
-import string
 import mysql.connector
-#from sklearn.linear_model import LinearRegression
-
+from sklearn.linear_model import LinearRegression
 from streamlit.uploaded_file_manager import UploadedFile
   
 
@@ -51,28 +48,39 @@ if rad == 'Consumer Desk':
         mydb = mysql.connector.connect(
         host="127.0.0.1",
         user="root",
+        password = "raghu1234",
         database="miniProject"
         )
         query = "SELECT Product_info.Name,Product_info.M_location,Batch.EXP,Batch.MFG,Company.Name as Company FROM Product INNER JOIN Batch ON Batch.Batch_id=Product.Batch_id INNER JOIN Product_info ON Product_info.info_id=Batch.info_id INNER JOIN Company ON Company.C_id=Product_info.C_id WHERE Product.Product_id =%s;"
         content = "SELECT Content.Content,Content.Source FROM Product INNER JOIN Batch ON Batch.Batch_id=Product.Batch_id INNER JOIN Product_info ON Product_info.info_id=Batch.info_id INNER JOIN Content ON Content.Cinfo_id=Product_info.C_id WHERE Product.Product_id=%s;"
-        try: 
-            mycursor = mydb.cursor()
-            #1st query fired
-            mycursor.execute(query,[(enterID)])
-            info = mycursor.fetchall()
-            
-            #2nd query fired
-            mycursor.execute(content,[(enterID)])
-            content=mycursor.fetchall()
-            
-            #st.write(myresult)
-            for x in info:
-                print (x)
-            print()
-            for x in content:
-                print(x)
+        if enterID == '':
+            st.error("NO ID ENTERED")
+        else:
+            try: 
+                mycursor = mydb.cursor()
+                #1st query fired
+                mycursor.execute(query,[(enterID)])
+                info = mycursor.fetchall()
                 
-        except: print("ERR : NO DATA FOUND")
+                #2nd query fired
+                mycursor.execute(content,[(enterID)])
+                
+                content=mycursor.fetchall()
+                if not info :
+                    st.error("NO DATA")
+                    exit()
+                st.header("CONTENT")
+                st.table(info)  
+                st.write(content)
+                
+                for x in info:
+                    print (x)
+                print()
+                for x in content:
+                    print(x)
+                
+            except: print("ERR : NO DATA FOUND")
+        
     #add code to check from database and printing the row. 
     
 if rad == 'Company Desk':
@@ -87,6 +95,7 @@ if rad == 'Company Desk':
     mydb = mysql.connector.connect(
     host="127.0.0.1",
     user="root",
+    password = "raghu1234",
     database="miniProject"
     )
     query = "SELECT * FROM Login WHERE UserName =%s AND Password =%s"
@@ -129,7 +138,11 @@ if rad == 'Company Desk':
         val = int(float(v))
 
         val = np.array(val).reshape(1,-1)
-        pred = lr.predict(val)
+        #pred = lr.predict(val)
+        if val == 0:
+            pred = 0
+        else:
+            pred = lr.predict(val)
         st.sidebar.write(pred)
     
     if rad_pred == '2. Lays':
@@ -155,7 +168,11 @@ if rad == 'Company Desk':
         val = int(float(v))
 
         val = np.array(val).reshape(1,-1)
-        pred = lr.predict(val)
+        #pred = lr.predict(val)
+        if val == 0:
+            pred = 0
+        else:
+            pred = lr.predict(val)
         st.sidebar.write(pred)
     
     if rad_pred == '3. Mountain dew':
@@ -181,7 +198,11 @@ if rad == 'Company Desk':
         val = int(float(v))
 
         val = np.array(val).reshape(1,-1)
-        pred = lr.predict(val)
+        #pred = lr.predict(val)
+        if val == 0:
+            pred = 0
+        else:
+            pred = lr.predict(val)
         st.sidebar.write(pred)
 
     if rad_pred == '4. Hide and seek':
@@ -207,7 +228,11 @@ if rad == 'Company Desk':
         val = int(float(v))
 
         val = np.array(val).reshape(1,-1)
-        pred = lr.predict(val)
+        #pred = lr.predict(val)
+        if val == 0:
+            pred = 0
+        else:
+            pred = lr.predict(val)
         st.sidebar.write(pred)
     
     if client_sub and myresult:
