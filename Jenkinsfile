@@ -18,5 +18,12 @@ pipeline {
             }
         }
     }
-}
 
+    post
+    {
+        always
+        {
+            emailext body: 'Test successful', subject: 'Test', to: 'raghu.parvatikar@gmail.com'
+        }
+    }
+}
